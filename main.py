@@ -1,6 +1,6 @@
 import discord
 import asyncio
-import time
+import datetime
 
 if __name__ == '__main__':
     intents = discord.Intents.all()
@@ -8,6 +8,16 @@ if __name__ == '__main__':
     token = open('token.txt', 'r').read()
 
     active_channels = dict()
+
+    def log_channel_activity(voice_channel):
+        if voice_channel.members:
+            if voice_channel in active_channels:
+                pass
+            else:
+                active_channels[voice_channel.id] = datetime.datetime.now()
+                print(voice_channel.name)
+        else:
+            active_channels.pop(voice_channel, None)
 
     async def active_channel_mapping():
         await client.wait_until_ready()
@@ -17,14 +27,13 @@ if __name__ == '__main__':
                 for guild in client.guilds:
                     for voice_channel in guild.voice_channels:
                         if voice_channel.name != 'AFK':
-                            print(voice_channel.name)
+                            log_channel_activity(voice_channel)
 
                 await asyncio.sleep(10)
             
             except Exception as e:
                 print(str(e))
                 await asyncio.sleep(10)
-
 
 
     @client.event
