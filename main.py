@@ -16,9 +16,10 @@ if __name__ == '__main__':
             else:
                 active_channels[voice_channel.id] = datetime.datetime.now()
                 # print(voice_channel.name)
-                print(active_channels)
         else:
             active_channels.pop(voice_channel, None)
+
+        # print(active_channels)
 
     async def active_channel_mapping():
         await client.wait_until_ready()
@@ -30,11 +31,27 @@ if __name__ == '__main__':
                         if voice_channel.name != 'AFK':
                             log_channel_activity(voice_channel)
 
-                await asyncio.sleep(10)
+                await asyncio.sleep(60)
             
             except Exception as e:
                 print(str(e))
-                await asyncio.sleep(10)
+                await asyncio.sleep(60)
+
+    async def posture_check():
+        await client.wait_until_ready()
+
+        while not client.is_closed():
+            try:
+                for channel in active_channels:
+                    if (active_channels[channel] - datetime.datetime.now()).minutes >= 30:
+                        # join channel
+                        # say posture check
+                        # leave channel
+                        active_channels[channel] = datetime.datetime.now()
+            
+            except Exception as e:
+                print(str(e))
+                await asyncio.sleep(60)
 
 
     @client.event
@@ -49,5 +66,6 @@ if __name__ == '__main__':
         #await message.add_reaction(client.get_emoji(370365085576724482))
 
     client.loop.create_task(active_channel_mapping())
+    client.loop.create_task(posture_check())
     client.run(token)
     
