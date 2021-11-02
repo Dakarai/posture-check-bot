@@ -11,11 +11,12 @@ if __name__ == '__main__':
 
     def log_channel_activity(voice_channel):
         if voice_channel.members:
-            if voice_channel in active_channels:
+            if voice_channel.id in active_channels:
                 pass
             else:
                 active_channels[voice_channel.id] = datetime.datetime.now()
-                print(voice_channel.name)
+                # print(voice_channel.name)
+                print(active_channels)
         else:
             active_channels.pop(voice_channel, None)
 
