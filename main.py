@@ -68,9 +68,11 @@ if __name__ == '__main__':
 
     @client.event
     async def on_message(message):
+        pass
         # print(f'{message.guild.name}: {message.channel}: {message.author}: {message.author.name}: {message.content}')
         #await message.add_reaction(client.get_emoji(370365085576724482))
 
+    
     client.loop.create_task(posture_check())
     client.loop.create_task(active_channel_mapping())
 
