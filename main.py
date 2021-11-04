@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import datetime
+import pyttsx3
 
 if __name__ == '__main__':
     intents = discord.Intents.all()
@@ -11,10 +12,10 @@ if __name__ == '__main__':
 
     def log_channel_activity(voice_channel):
         if voice_channel.members:
-            if voice_channel.id in active_channels:
+            if voice_channel in active_channels:
                 pass
             else:
-                active_channels[voice_channel.id] = datetime.datetime.now()
+                active_channels[voice_channel] = datetime.datetime.now()
                 print(voice_channel.id)
         else:
             active_channels.pop(voice_channel, None)
@@ -31,11 +32,11 @@ if __name__ == '__main__':
                         if voice_channel.name != 'AFK':
                             log_channel_activity(voice_channel)
 
-                await asyncio.sleep(60)
+                await asyncio.sleep(10)
             
             except Exception as e:
                 print(str(e))
-                await asyncio.sleep(60)
+                await asyncio.sleep(10)
 
     async def posture_check():
         await client.wait_until_ready()
@@ -44,20 +45,22 @@ if __name__ == '__main__':
             try:
                 for channel in active_channels:
                     if (active_channels[channel] - datetime.datetime.now()).seconds >= 30:
-                        # join channel
+                        v_p = await channel.connect()
                         # await channel.connect()?
                         # say posture check
                         # leave channel
+                        await v_p.disconnect()
                         active_channels[channel] = datetime.datetime.now()
                 
-                await asyncio.sleep(60)
+                await asyncio.sleep(10)
                 
             except Exception as e:
                 print(str(e))
-                await asyncio.sleep(60)
+                await asyncio.sleep(10)
 
-    def join_channel():
-        pass
+    async def join_channel():
+        for voice_channel in active_channels:
+            await voice_channel.connect()
 
 
     @client.event
@@ -75,5 +78,4 @@ if __name__ == '__main__':
     
     client.loop.create_task(posture_check())
     client.loop.create_task(active_channel_mapping())
-
     client.run(token)
