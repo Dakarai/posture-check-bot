@@ -15,7 +15,7 @@ if __name__ == '__main__':
                 pass
             else:
                 active_channels[voice_channel.id] = datetime.datetime.now()
-                # print(voice_channel.name)
+                print(voice_channel.id)
         else:
             active_channels.pop(voice_channel, None)
 
@@ -43,15 +43,21 @@ if __name__ == '__main__':
         while not client.is_closed():
             try:
                 for channel in active_channels:
-                    if (active_channels[channel] - datetime.datetime.now()).minutes >= 30:
+                    if (active_channels[channel] - datetime.datetime.now()).seconds >= 30:
                         # join channel
+                        # await channel.connect()?
                         # say posture check
                         # leave channel
                         active_channels[channel] = datetime.datetime.now()
-            
+                
+                await asyncio.sleep(60)
+                
             except Exception as e:
                 print(str(e))
                 await asyncio.sleep(60)
+
+    def join_channel():
+        pass
 
 
     @client.event
@@ -62,10 +68,10 @@ if __name__ == '__main__':
 
     @client.event
     async def on_message(message):
-        print(f'{message.guild.name}: {message.channel}: {message.author}: {message.author.name}: {message.content}')
+        # print(f'{message.guild.name}: {message.channel}: {message.author}: {message.author.name}: {message.content}')
         #await message.add_reaction(client.get_emoji(370365085576724482))
 
-    client.loop.create_task(active_channel_mapping())
     client.loop.create_task(posture_check())
+    client.loop.create_task(active_channel_mapping())
+
     client.run(token)
-    
