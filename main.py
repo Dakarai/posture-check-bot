@@ -1,6 +1,6 @@
 import discord
 import asyncio
-import datetime
+import time
 import pyttsx3
 import random
 
@@ -10,13 +10,17 @@ if __name__ == '__main__':
     token = open('token.txt', 'r').read()
 
     active_channels = dict()
+    things_to_say = ["Posture Check, Bitches",
+                    "Posture Check",
+                    "Check your fucking posture",
+                    "Stretch those backs. It's posture check time."]
 
     def log_channel_activity(voice_channel):
         if voice_channel.members:
             if voice_channel in active_channels:
                 pass
             else:
-                active_channels[voice_channel] = datetime.datetime.now()
+                active_channels[voice_channel] = time.time()
                 print(voice_channel.id)
         else:
             active_channels.pop(voice_channel, None)
@@ -27,8 +31,10 @@ if __name__ == '__main__':
         engine = pyttsx3.init()
         list_of_voices = [voice for voice in engine.getProperty('voices')]
         chosen_voice = random.choice(list_of_voices)
+        line_to_say = random.choice(things_to_say)
         engine.setProperty('voice', chosen_voice.id)
-        engine.save_to_file('Posture Check', 'posture_check.mp3')
+        engine.save_to_file(line_to_say, 'posture_check.mp3')
+        engine.runAndWait()
 
     async def active_channel_mapping():
         await client.wait_until_ready()
@@ -52,15 +58,14 @@ if __name__ == '__main__':
         while not client.is_closed():
             try:
                 for channel in active_channels:
-                    if (active_channels[channel] - datetime.datetime.now()).seconds >= (30 * 60):
-                        print(active_channels[channel])
-                        print(datetime.datetime.now())
+                    if (time.time() - active_channels[channel]) >= 30:
                         print("Entering {} for posture check".format(channel.name))
                         v_p = await channel.connect()
                         generate_voice_line()
                         v_p.play(discord.FFmpegPCMAudio('posture_check.mp3'))
+                        await asyncio.sleep(5)
                         await v_p.disconnect()
-                        active_channels[channel] = datetime.datetime.now()
+                        active_channels[channel] = time.time()
                 
                 await asyncio.sleep(10)
                 
