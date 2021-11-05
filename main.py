@@ -53,6 +53,8 @@ if __name__ == '__main__':
             try:
                 for channel in active_channels:
                     if (active_channels[channel] - datetime.datetime.now()).seconds >= (30 * 60):
+                        print(active_channels[channel])
+                        print(datetime.datetime.now())
                         print("Entering {} for posture check".format(channel.name))
                         v_p = await channel.connect()
                         generate_voice_line()
