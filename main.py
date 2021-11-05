@@ -2,6 +2,7 @@ import discord
 import asyncio
 import datetime
 import pyttsx3
+import random
 
 if __name__ == '__main__':
     intents = discord.Intents.all()
@@ -21,6 +22,13 @@ if __name__ == '__main__':
             active_channels.pop(voice_channel, None)
 
         # print(active_channels)
+
+    def generate_voice_line():
+        engine = pyttsx3.init()
+        list_of_voices = [voice for voice in engine.getProperty('voices')]
+        chosen_voice = random.choice(list_of_voices)
+        engine.setProperty('voice', chosen_voice.id)
+        engine.save_to_file('Posture Check', 'posture_check.mp3')
 
     async def active_channel_mapping():
         await client.wait_until_ready()
@@ -44,11 +52,11 @@ if __name__ == '__main__':
         while not client.is_closed():
             try:
                 for channel in active_channels:
-                    if (active_channels[channel] - datetime.datetime.now()).seconds >= 30:
+                    if (active_channels[channel] - datetime.datetime.now()).seconds >= (30 * 60):
+                        print("Entering {} for posture check".format(channel.name))
                         v_p = await channel.connect()
-                        # await channel.connect()?
-                        # say posture check
-                        # leave channel
+                        generate_voice_line()
+                        v_p.play(discord.FFmpegPCMAudio('posture_check.mp3'))
                         await v_p.disconnect()
                         active_channels[channel] = datetime.datetime.now()
                 
