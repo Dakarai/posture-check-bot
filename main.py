@@ -58,12 +58,12 @@ if __name__ == '__main__':
         while not client.is_closed():
             try:
                 for channel in active_channels:
-                    if (time.time() - active_channels[channel]) >= 30:
+                    if (time.time() - active_channels[channel]) >= (30 * 60):
                         print("Entering {} for posture check".format(channel.name))
                         v_p = await channel.connect()
                         generate_voice_line()
                         v_p.play(discord.FFmpegPCMAudio('posture_check.mp3'))
-                        await asyncio.sleep(5)
+                        await asyncio.sleep(10)
                         await v_p.disconnect()
                         active_channels[channel] = time.time()
                 
