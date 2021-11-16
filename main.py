@@ -81,9 +81,9 @@ if __name__ == '__main__':
 
     @client.event
     async def on_ready():
-        print(f'Logged in as {client.user}')
+        print(f'{time.ctime(time.time())}: Logged in as {client.user}')
         for guild in client.guilds:
-            print(f'Logged into {guild.name}')
+            print(f'{time.ctime(time.time())}: Logged into {guild.name}')
 
     @client.event
     async def on_message(message):
