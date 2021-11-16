@@ -21,7 +21,7 @@ if __name__ == '__main__':
                 pass
             else:
                 active_channels[voice_channel] = time.time()
-                print(voice_channel.id)
+                print("{}: {}".format(time.ctime(time.time()), voice_channel.id))
         else:
             active_channels.pop(voice_channel, None)
 
@@ -59,18 +59,19 @@ if __name__ == '__main__':
             try:
                 for channel in active_channels:
                     if (time.time() - active_channels[channel]) >= (30 * 60):
-                        print("Entering {} for posture check".format(channel.name))
+                        print("{}: Entering {} for posture check".format(time.ctime(time.time()), channel.name))
                         v_p = await channel.connect()
                         generate_voice_line()
                         v_p.play(discord.FFmpegPCMAudio('posture_check.mp3'))
                         await asyncio.sleep(10)
                         await v_p.disconnect()
+                        print("{}: Disconnected from {}".format(time.ctime(time.time()), channel.name)))
                         active_channels[channel] = time.time()
                 
                 await asyncio.sleep(10)
                 
             except Exception as e:
-                print(str(e))
+                print("{}: {}".format(time.ctime(time.time()), str(e)))
                 await asyncio.sleep(10)
 
     async def join_channel():
