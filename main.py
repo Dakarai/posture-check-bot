@@ -65,7 +65,7 @@ if __name__ == '__main__':
                         v_p.play(discord.FFmpegPCMAudio('posture_check.mp3'))
                         await asyncio.sleep(10)
                         await v_p.disconnect()
-                        print("{}: Disconnected from {}".format(time.ctime(time.time()), channel.name)))
+                        print("{}: Disconnected from {}".format(time.ctime(time.time()), channel.name))
                         active_channels[channel] = time.time()
                 
                 await asyncio.sleep(10)
