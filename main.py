@@ -1,8 +1,10 @@
-import discord
 import asyncio
-import time
-import pyttsx3
+import os
 import random
+import time
+
+import discord
+import pyttsx3
 
 if __name__ == '__main__':
     intents = discord.Intents.all()
@@ -27,14 +29,19 @@ if __name__ == '__main__':
 
         # print(active_channels)
 
-    def generate_voice_line():
-        engine = pyttsx3.init()
-        list_of_voices = [voice for voice in engine.getProperty('voices')]
-        chosen_voice = random.choice(list_of_voices)
-        line_to_say = random.choice(things_to_say)
-        engine.setProperty('voice', chosen_voice.id)
-        engine.save_to_file(line_to_say, 'posture_check.mp3')
-        engine.runAndWait()
+    # def generate_voice_line():
+    #     engine = pyttsx3.init()
+    #     list_of_voices = [voice for voice in engine.getProperty('voices')]
+    #     chosen_voice = random.choice(list_of_voices)
+    #     line_to_say = random.choice(things_to_say)
+    #     engine.setProperty('voice', chosen_voice.id)
+    #     engine.save_to_file(line_to_say, 'posture_check.mp3')
+    #     engine.runAndWait()
+
+    def select_voice_line():
+        path = './voice_lines'
+        all_mp3 = [os.path.join(path, f) for f in os.listdir(path) if f.endswith('.mp3')]
+        return random.choice(all_mp3)
 
     async def active_channel_mapping():
         await client.wait_until_ready()
@@ -61,8 +68,8 @@ if __name__ == '__main__':
                     if (time.time() - active_channels[channel]) >= (30 * 60):
                         print("{}: Entering {} for posture check".format(time.ctime(time.time()), channel.name))
                         v_p = await channel.connect()
-                        generate_voice_line()
-                        v_p.play(discord.FFmpegPCMAudio('posture_check.mp3'))
+                        file = select_voice_line()
+                        v_p.play(discord.FFmpegPCMAudio(file))
                         await asyncio.sleep(10)
                         await v_p.disconnect()
                         print("{}: Disconnected from {}".format(time.ctime(time.time()), channel.name))
