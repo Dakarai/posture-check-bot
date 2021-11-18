@@ -65,7 +65,7 @@ if __name__ == '__main__':
         while not client.is_closed():
             try:
                 for channel in active_channels:
-                    if (time.time() - active_channels[channel]) >= (30 * 60):
+                    if (time.time() - active_channels[channel]) >= (30* 60):
                         print("{}: Entering {} for posture check".format(time.ctime(time.time()), channel.name))
                         v_p = await channel.connect()
                         file = select_voice_line()
