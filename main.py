@@ -70,7 +70,7 @@ if __name__ == '__main__':
                         v_p = await channel.connect()
                         file = select_voice_line()
                         v_p.play(discord.FFmpegPCMAudio(file))
-                        await asyncio.sleep(10)
+                        await asyncio.sleep(30)
                         await v_p.disconnect()
                         print("{}: Disconnected from {}".format(time.ctime(time.time()), channel.name))
                         active_channels[channel] = time.time()
